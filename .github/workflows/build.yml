@@ -4,31 +4,37 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:   # allows manual run
+  workflow_dispatch:   # allows manual run from GitHub UI
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
+      # 1️⃣ Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js (required for nw-builder)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # 3️⃣ Install nw-builder globally
       - name: Install nw-builder
         run: npm install -g nw-builder
 
+      # 4️⃣ Build the app (runs in repo root)
       - name: Build App
+        working-directory: ${{ github.workspace }}
         run: |
-          cd $GITHUB_WORKSPACE
+          echo "Listing files in repo root:"
           dir
           nwbuild -p win64 ./ -o dist --name "CashMemoApp"
 
-      - name: Upload Release
+      # 5️⃣ Upload the built exe to GitHub Release
+      - name: Upload exe to Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/CashMemoApp/win64/CashMemoApp.exe
