@@ -1,0 +1,36 @@
+name: Build Cash Memo App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:   # allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install nw-builder
+        run: npm install -g nw-builder
+
+      - name: Build App (single .exe)
+        run: |
+          mkdir dist
+          # Build a single Windows executable using nw-builder
+          nwbuild -p win64 . -o dist --name "CashMemoApp" --mode build
+
+      - name: Upload exe to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/CashMemoApp/win64/CashMemoApp.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
