@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:   # allows manual trigger from GitHub UI
+  workflow_dispatch:   # allows manual run
 
 jobs:
   build:
@@ -22,13 +22,13 @@ jobs:
       - name: Install nw-builder
         run: npm install -g nw-builder
 
-      - name: Build App (single .exe)
+      - name: Build App
         run: |
-          mkdir dist
-          # Build a single Windows executable using nw-builder
-          nwbuild -p win64 . -o dist --name "CashMemoApp" --mode build
+          cd $GITHUB_WORKSPACE
+          dir
+          nwbuild -p win64 ./ -o dist --name "CashMemoApp"
 
-      - name: Upload exe to Release
+      - name: Upload Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/CashMemoApp/win64/CashMemoApp.exe
