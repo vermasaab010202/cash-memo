@@ -1,0 +1,10 @@
+{
+  "name": "my-html-app",
+  "version": "1.0.0",
+  "main": "index.html",
+  "window": {
+    "title": "Cash Memo App",
+    "width": 1000,
+    "height": 700
+  }
+}
